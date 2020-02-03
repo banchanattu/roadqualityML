@@ -1,34 +1,38 @@
 import numpy as np
 import tensorflow as tf
-import csvreader as CSV
-import math as MATH
-import calculatedft as DFT
+import processfile as DataFile
+import datetime
 print("hello")
+
 
 # Just disables the warning, doesn't enable AVX/FMA
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
+log_dir="logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1,write_graph=True)
+
+
 filename ='/Users/i827954/isaacproject/roadquality/CaminDiablo/a.csv'
-csvfile = CSV.CSVReader(filename,30, 1)
-csvfile.intilializeXYZArrayFromCSV()
 
-X = csvfile.getXArray()
-Y = csvfile.getYArray()
-Z = csvfile.getZArray()
+dataFile = DataFile.ProcessFile()
+pathName = '/Users/i827954/isaacproject/roadquality/CaminDiablo'
 
-length = len(X)
-MAG = [0] * length
-for i in range(0, length-1, 1):
-    MAG[i] = MATH.sqrt(X[i] ** 2 + Y[i] ** 2 + Z[i] ** 2)
-dftcalculator = DFT.DFTCalculator()
+frequecyArrayList, yvalfordirectory  = dataFile.getFrequencyArrayListForFiles(pathName, dataFile.GOOD)
 
-frequencies = dftcalculator.getFrequencyData(MAG)
 anninputsize = 1000
 model = tf.keras.models.Sequential([
-  tf.keras.layers.Dense(anninputsize, input_shape=(2,), activation='relu'),
+  tf.keras.layers.Dense(500, input_shape=(1000,), activation='relu'),
   tf.keras.layers.Dense(500,  activation='relu'),
 tf.keras.layers.Dense(1,  activation='softmax')
 ])
 
-print len(frequencies)
+# frequecyArrayList = [[1,2,3,4,5,6,7,8,9],
+#          [2,3,4,5,6,7,8,9,0],
+#          [5,6,7,8,9,0,4,5,6]]
+# yvalfordirectory = [0,1,1]
+
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy', 'mse'])
+print frequecyArrayList.shape, yvalfordirectory.shape
+model.fit(frequecyArrayList,yvalfordirectory, epochs=1000, batch_size=128, callbacks=[tensorboard_callback])
+
