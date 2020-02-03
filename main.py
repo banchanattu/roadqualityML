@@ -2,7 +2,6 @@ import numpy as np
 import tensorflow as tf
 import processfile as DataFile
 import datetime
-print("hello")
 
 
 # Just disables the warning, doesn't enable AVX/FMA
@@ -23,16 +22,21 @@ frequecyArrayList, yvalfordirectory  = dataFile.getFrequencyArrayListForFiles(pa
 anninputsize = 1000
 model = tf.keras.models.Sequential([
   tf.keras.layers.Dense(500, input_shape=(1000,), activation='relu'),
-  tf.keras.layers.Dense(500,  activation='relu'),
+  tf.keras.layers.Dense(500,  activation='softmax'),
 tf.keras.layers.Dense(1,  activation='softmax')
 ])
 
-# frequecyArrayList = [[1,2,3,4,5,6,7,8,9],
-#          [2,3,4,5,6,7,8,9,0],
-#          [5,6,7,8,9,0,4,5,6]]
-# yvalfordirectory = [0,1,1]
+# frequecyArrayList = [[1,2,3,4,5,6,7,8,9,10],
+#          [2,3,4,5,6,7,8,9,0,10],
+#          [5,6,7,8,9,0,4,5,6,10]]
+# yvalfordirectory = [1,1,1,1,1,1]
 
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy', 'mse'])
-print frequecyArrayList.shape, yvalfordirectory.shape
-model.fit(frequecyArrayList,yvalfordirectory, epochs=1000, batch_size=128, callbacks=[tensorboard_callback])
+print np.asanyarray(frequecyArrayList).shape
+    #, yvalfordirectory.shape
+#x_val = tf.convert_to_tensor(frequecyArrayList)
+x_val = np.asarray(frequecyArrayList)
+y_val = np.asarray(yvalfordirectory)
+#y_val = np.asarray([0,0,1,1,1,1])
+model.fit(x_val, y_val,epochs=1000, batch_size=128, callbacks=[tensorboard_callback])
 
