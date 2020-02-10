@@ -23,17 +23,20 @@ class ProcessFile:
         dftcalculator = DFT.DFTCalculator()
 
         frequencies = dftcalculator.getRealPartArray( dftcalculator.getFrequencyData(MAG))
-        return frequencies[:1000];
+        return frequencies[:300];
 
     # For a given directory read each file and return an array of array of frequencies
     def getFrequencyArrayListForFiles(self, directoryPathName, roadCondition):
-        dirlist = os.listdir(directoryPathName)
+        dirlist = [f for f in os.listdir(directoryPathName) if f.endswith('.csv')]
+            #os.listdir(directoryPathName)
         frequecyArrayList = [[]]*len(dirlist)
         yvalarray = []
         for i in range(len(dirlist)):
             frequecyArrayList[i] = self.getMagnitudeData(directoryPathName + "/" + dirlist[i]);
         if roadCondition == self.GOOD:
             yvalarray = [1]*len(dirlist)
+        else:
+            yvalarray = [0]*len(dirlist)
 
         return frequecyArrayList, yvalarray;
 

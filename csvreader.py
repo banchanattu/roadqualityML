@@ -35,6 +35,7 @@ class CSVReader:
 		row_counter = 0
 		with open(self.datafilename) as csvDataFile:
 			csvReader = csv.reader(csvDataFile, delimiter=';')
+			print csvDataFile
 			for row in csvReader:
 				#Since first line is the header, ignore 0th row
 				if  row_counter > 2 :
@@ -51,13 +52,13 @@ class CSVReader:
 		return
 	
 	def getXArray(self):
-   		return self.Xarray
+   		return self.Xarray[:600]
    
 	def getYArray(self):
-		return self.Yarray
+		return self.Yarray[:600]
 
 	def getZArray(self):
-		return self.Zarray
+		return self.Zarray[:600]
 	
 	def getIArray(self):
 		frequencyArray = []
