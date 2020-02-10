@@ -35,8 +35,8 @@ for i in range(len(pathdata)):
 
 anninputsize = 1000
 model = tf.keras.models.Sequential([
-  tf.keras.layers.Dense(400, input_shape=(300,), activation='relu'),
-  tf.keras.layers.Dense(500,  activation='relu'),
+  tf.keras.layers.Dense(500, input_shape=(300,), activation='softmax'),
+  tf.keras.layers.Dense(1000,  activation='relu'),
 tf.keras.layers.Dense(1,  activation='relu')
 ])
 
